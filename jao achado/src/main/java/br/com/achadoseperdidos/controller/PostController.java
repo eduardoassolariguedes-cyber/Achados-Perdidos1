@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PostController {
@@ -54,8 +55,13 @@ public class PostController {
             @RequestParam(defaultValue = "") String city,
             @RequestParam(defaultValue = "") String neighborhood,
             @RequestParam(defaultValue = "") String q,
-            @RequestParam(required = false) Long openComments,
-            Model model) {
+                       @RequestParam(required = false) Long openComments,
+            Model model,
+            HttpSession session) {
+
+        if (session.getAttribute("usuarioId") == null) {
+            return "redirect:/login";
+        }
         String activeStatus = List.of("todos", "perdido", "encontrado").contains(status) ? status : "todos";
         String activeState = STATES.stream().anyMatch(option -> option.getCode().equals(state)) ? state : "";
         List<String> cities = postService.findCities(activeState);
@@ -79,10 +85,15 @@ public class PostController {
     }
 
     @GetMapping("/publicar")
-    public String publishPage(Model model) {
-        model.addAttribute("states", STATES);
-        return "publish";
+public String publishPage(Model model, HttpSession session) {
+
+    if (session.getAttribute("usuarioId") == null) {
+        return "redirect:/login";
     }
+
+    model.addAttribute("states", STATES);
+    return "publish";
+}
 
     @PostMapping("/posts")
     public String createPost(
@@ -95,8 +106,13 @@ public class PostController {
             @RequestParam String status,
             @RequestParam(defaultValue = "contain") String imageFit,
             @RequestParam(defaultValue = "1") double zoom,
-            @RequestParam(required = false) MultipartFile image,
-            RedirectAttributes redirectAttributes) {
+        @RequestParam(required = false) MultipartFile image,
+RedirectAttributes redirectAttributes,
+HttpSession session) {
+
+    if (session.getAttribute("usuarioId") == null) {
+        return "redirect:/login";
+    }
         String cleanTitle = title.trim();
         String cleanDescription = description.trim();
         String cleanLocation = location.trim();
@@ -154,7 +170,11 @@ public class PostController {
     public String addComment(
             @PathVariable long id,
             @RequestParam String text,
-            RedirectAttributes redirectAttributes) {
+          RedirectAttributes redirectAttributes,
+HttpSession session) {
+    if (session.getAttribute("usuarioId") == null) {
+    return "redirect:/login";
+}
         String cleanText = text.trim();
         if (!StringUtils.hasText(cleanText) || cleanText.length() > 180) {
             redirectAttributes.addFlashAttribute("error", "O comentário deve ter entre 1 e 180 caracteres.");
@@ -167,8 +187,14 @@ public class PostController {
         return "redirect:/?openComments=" + id + "#post-" + id;
     }
 
-    @GetMapping("/images/{id}")
-    public ResponseEntity<byte[]> image(@PathVariable long id) {
+   @GetMapping("/images/{id}")
+public ResponseEntity<byte[]> image(
+        @PathVariable long id,
+        HttpSession session) {
+
+    if (session.getAttribute("usuarioId") == null) {
+        return ResponseEntity.status(401).build();
+    }
         Optional<LostFoundPost> post = postService.findById(id);
         if (post.isEmpty() || !post.get().hasImage()) {
             return ResponseEntity.notFound().build();

@@ -962,3 +962,91 @@ h2 {
     transition-duration: .01ms !important;
   }
 }
+
+/* =================================
+   ESTILOS DA TELA DE LOGIN
+================================= */
+
+.publish-form {
+    padding: 28px 22px;
+}
+
+.publish-form h1 {
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 24px;
+}
+
+.publish-form p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.form-group {
+    display: grid;
+    gap: 7px;
+    margin-bottom: 17px;
+}
+
+.form-group label {
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.form-group input {
+    width: 100%;
+    height: 44px;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    outline: none;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 12px;
+}
+
+.form-group input:focus {
+    border-color: #d9a681;
+    box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.primary-button {
+    width: 100%;
+    min-height: 46px;
+    margin-top: 5px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+
+
+.primary-button:hover {
+    background: var(--primary-dark);
+}
+
+.publish-form a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.publish-form a:hover {
+    text-decoration: underline;
+}
+
+.topbar .logo {
+    color: var(--ink);
+    font-family: Manrope, sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+}
